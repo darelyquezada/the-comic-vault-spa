@@ -5,7 +5,7 @@ import { Comic } from '../models/comic.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class ComicService { 
+export class ComicService {
   // Use API URL from environment
   private apiUrl = `${environment.apiUrl}/api/comics`;
 
@@ -20,7 +20,7 @@ export class ComicService {
   getComicById(id: number): Observable<Comic | undefined> {
     return this.http.get<Comic>(`${this.apiUrl}/${id}`);
   }
-  
+
   // Adds a new comic to the list and gives it an ID
   addComic(comic: Omit<Comic, 'id'>): Observable<Comic> {
     return this.http.post<Comic>(this.apiUrl, comic);
