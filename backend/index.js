@@ -161,22 +161,12 @@ async function deleteProduct(id) {
 // MESSAGES TABLE
 
 async function createMessage(message) {
-  const createTableQuery = `CREATE TABLE IF NOT EXISTS messages (
-        id INT AUTO_INCREMENT PRIMARY KEY, 
-        name VARCHAR(50) NOT NULL, 
-        email VARCHAR(50) NOT NULL, 
-        subject VARCHAR(50) NOT NULL,
-        message TEXT NOT NULL
-    )`;
-  await db.query(createTableQuery);
-
-  const insertQuery =
-    "INSERT INTO messages (name, email, message, subject) VALUES (?, ?, ?, ?)";
+  const insertQuery = "INSERT INTO messages (name, email, subject, message) VALUES (?, ?, ?, ?)";
   const [result] = await db.query(insertQuery, [
     message.name,
     message.email,
     message.subject,
-    message.message,
+    message.message
   ]);
   return result;
 }
