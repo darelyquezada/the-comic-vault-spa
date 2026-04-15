@@ -1,0 +1,52 @@
+<section class="movie-vault-section" *ngIf="movie && !isLoading">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">FROM PAGE TO SCREEN</h2>
+      <p class="section-subtitle">Featured Cinematic Adaptation</p>
+    </div>
+
+    <div class="movie-display-card">
+      <div class="movie-grid">
+        
+        <div class="movie-poster-wrap">
+          <img [src]="movie.Poster" [alt]="movie.Title">
+          <div class="movie-rating">
+            <span class="rating-value">{{ movie.imdbRating }}</span>
+            <span class="rating-label">IMDb</span>
+          </div>
+        </div>
+
+        <div class="movie-content">
+          <div class="movie-meta">
+            <span class="movie-year">{{ movie.Year }}</span>
+            <span class="movie-genre">{{ movie.Genre }}</span>
+          </div>
+          
+          <h3 class="movie-title">{{ movie.Title | uppercase }}</h3>
+          
+          <div class="movie-plot">
+            <p>{{ movie.Plot }}</p>
+          </div>
+
+          <div class="movie-info-list">
+            <div class="info-item">
+              <strong>DIRECTOR:</strong> <span>{{ movie.Director }}</span>
+            </div>
+            <div class="info-item">
+              <strong>STARRING:</strong> <span>{{ movie.Actors }}</span>
+            </div>
+            <div class="info-item">
+              <strong>AWARDS:</strong> <span>{{ movie.Awards }}</span>
+            </div>
+          </div>
+
+          <div class="movie-actions">
+            <button class="btn btn-red">WATCH TRAILER</button>
+            <button class="btn btn-outline">BUY TICKETS</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

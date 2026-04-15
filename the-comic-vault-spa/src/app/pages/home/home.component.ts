@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ComicCardComponent } from '../../components/comic-card/comic-card.component';
+import { MovieSectionComponent } from '../../components/movie-section/movie-section.component'
 import { ComicService } from '../../services/comic.service';
 import { CartService } from '../../services/cart.service';
 import { ContactService } from '../../services/contact.service';
@@ -20,7 +21,7 @@ interface ContactForm {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, HeaderComponent, ComicCardComponent],
+  imports: [CommonModule, FormsModule, RouterLink, HeaderComponent, ComicCardComponent, MovieSectionComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
