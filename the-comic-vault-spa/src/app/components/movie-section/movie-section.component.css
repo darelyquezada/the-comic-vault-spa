@@ -82,12 +82,6 @@
   margin-right: 10px;
 }
 
-.movie-actions {
-  margin-top: 30px;
-  display: flex;
-  gap: 15px;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .movie-grid {
