@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Comic } from '../models/comic.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ComicService { // Temporal array to simulate backend data
-  private comics: Comic[] = [
+  /* private comics: Comic[] = [
     {
       id: 1,
       title: 'Daredevil (2026) #1',
@@ -174,33 +175,29 @@ export class ComicService { // Temporal array to simulate backend data
       is_available: true,
       release_date: '2026-03-22'
     }
-  ];
+  ]; */
+
+  private apiUrl = `${environment.apiUrl}/api/comics`;
 
   constructor(private http: HttpClient) {}
 
   // Returns the full list of comics
   getComics(): Observable<Comic[]> {
-    // this.http.get<Comic[]>('/api/comics')
-    return of(this.comics);
+    return this.http.get<Comic[]>(this.apiUrl);
   }
 
   // Finds a comic by its ID number
   getComicById(id: number): Observable<Comic | undefined> {
-    return of(this.comics.find(c => c.id === id));
+    return this.http.get<Comic>(`${this.apiUrl}/${id}`);
   }
   
   // Adds a new comic to the list and gives it an ID
   addComic(comic: Omit<Comic, 'id'>): Observable<Comic> {
-    const newComic: Comic = {
-      ...comic,
-      id: this.comics.length + 1
-    };
-    this.comics.push(newComic);
-    return of(newComic);
+    return this.http.post<Comic>(this.apiUrl, comic);
   }
 
   // Gets the first 6 comics to show them on the home page
   getFeaturedComics(): Observable<Comic[]> {
-    return of(this.comics.slice(0, 6));
+    return this.http.get<Comic[]>(`${this.apiUrl}/featured`);
   }
 }
