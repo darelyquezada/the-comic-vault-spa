@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { ComicCardComponent } from '../../components/comic-card/comic-card.component';
 import { ComicService } from '../../services/comic.service';
 import { CartService } from '../../services/cart.service';
+import { ContactService } from '../../services/contact.service';
 import { Comic } from '../../models/comic.model';
 
 // Interface for the contact section data
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private comicService: ComicService, // For comic data
     private cartService: CartService, // For cart data
+    private contactService: ContactService, // For contact message
     private router: Router // For navigation to details page
   ) {}
 
@@ -67,12 +69,20 @@ export class HomeComponent implements OnInit {
   // Handles the contact form submission
   onSubmitContact(form: NgForm): void {
     if (form.valid) {
-      this.messageSent = true; // Show success message
-      form.resetForm(); // Clear the form fields
-      this.contactForm = { name: '', email: '', subject: '', message: '' };
-      
-      // Hide the success message after 5 seconds
-      setTimeout(() => { this.messageSent = false; }, 5000);
+      // Call the service to save the message in the db
+      this.contactService.sendMessage(this.contactForm).subscribe({
+        next: (response) => {
+          console.log('Message saved successfully', response);
+          this.messageSent = true; // Show confirmation to the user
+          form.resetForm();
+          this.contactForm = { name: '', email: '', subject: '', message: '' };
+          
+          setTimeout(() => { this.messageSent = false; }, 5000);
+        },
+        error: (err) => {
+          console.error('Error saving message', err);
+        }
+      });
     }
   }
 }
