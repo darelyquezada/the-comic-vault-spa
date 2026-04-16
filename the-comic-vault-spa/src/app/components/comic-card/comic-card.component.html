@@ -2,7 +2,7 @@
   <!-- Image Container -->
   <div class="card-image-wrap">
     <span class="brand-badge badge" [ngClass]="getBrandClass()">{{ comic.brand | uppercase }}</span>
-    <img [src]="comic.image_url" [alt]="comic.title" class="card-image" loading="lazy" />
+    <img [src]="'assets/' + comic.image_url" [alt]="comic.title" class="card-image" loading="lazy" />
     <div class="card-overlay">
       <a [routerLink]="['/details', comic.id]" class="btn btn-yellow overlay-btn" (click)="$event.stopPropagation()">
         View Details
