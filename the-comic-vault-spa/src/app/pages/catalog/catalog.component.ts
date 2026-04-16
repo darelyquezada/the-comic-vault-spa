@@ -21,7 +21,7 @@ export class CatalogComponent implements OnInit {
   selectedBrand = signal<string>(''); // Filter for Marvel, DC, etc.
   selectedCategory = signal<string>(''); // Filter for specific characters
   
-  isLoading = true; // Shows a icon while data loads
+  isLoading = true; // Shows an icon while data loads
 
   // Static lists for the filter buttons
   brands: string[] = ['MARVEL', 'DC'];
@@ -81,11 +81,6 @@ export class CatalogComponent implements OnInit {
   // Logic to select or deselect a category filter
   toggleCategory(cat: string): void { 
     this.selectedCategory.set(this.selectedCategory() === cat ? '' : cat); 
-  }
-
-  // This method is called by the search input
-  onSearch(): void { 
-    // No manual filtering needed because computed() handles it automatically
   }
 
   // Resets all filters
