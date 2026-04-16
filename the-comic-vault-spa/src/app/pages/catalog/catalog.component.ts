@@ -35,20 +35,22 @@ export class CatalogComponent implements OnInit {
     const query = this.searchQuery().toLowerCase().trim();
     if (query) {
       result = result.filter(c => 
-        c.title.toLowerCase().includes(query) || 
-        c.writer.toLowerCase().includes(query) || 
-        c.category.toLowerCase().includes(query)
+        (c.title && c.title.toLowerCase().includes(query)) || 
+        (c.writer && c.writer.toLowerCase().includes(query)) || 
+        (c.category && c.category.toLowerCase().includes(query))
       );
     }
 
     // Filter by brand if one is selected
     if (this.selectedBrand()) {
-      result = result.filter(c => c.brand === this.selectedBrand());
+      const matchBrand = this.selectedBrand().toLowerCase();
+      result = result.filter(c => c.brand && c.brand.toLowerCase() === matchBrand);
     }
 
     // Filter by category if one is selected
     if (this.selectedCategory()) {
-      result = result.filter(c => c.category === this.selectedCategory());
+      const matchCategory = this.selectedCategory().toLowerCase();
+      result = result.filter(c => c.category && c.category.toLowerCase() === matchCategory);
     }
 
     return result;

@@ -9,22 +9,38 @@ import { ComicService } from '../../services/comic.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-comic.component.html',
-  styleUrls: ['./add-comic.component.css']
+  styleUrls: ['./add-comic.component.css'],
 })
-export class AddComicComponent implements OnInit { // Reactive Form
+export class AddComicComponent implements OnInit {
+  // Reactive Form
   comicForm!: FormGroup; // Main reactive form group
   isSubmitting = false; // Loading state for the button
   submitSuccess = false; // Shows success message
   submitError = ''; // Holds error messages
 
+  isDragging = false; // Drag & drop state
+  imagePreview: string | ArrayBuffer | null = null; // Preview base64 string
+
   // Options for the dropdown menus
-  categories = ['Daredevil','Spiderman','Batman','Xmen','Wonderwoman','Invincible','Flash','Thor','Saga','Captainamerica','Aquaman'];
+  categories = [
+    'Daredevil',
+    'Spiderman',
+    'Batman',
+    'Xmen',
+    'Wonderwoman',
+    'Invincible',
+    'Flash',
+    'Thor',
+    'Saga',
+    'Captainamerica',
+    'Aquaman',
+  ];
   brands = ['MARVEL', 'DC', 'IMAGE'];
 
   constructor(
     private fb: FormBuilder,
     private comicService: ComicService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -40,12 +56,14 @@ export class AddComicComponent implements OnInit { // Reactive Form
       release_date: ['', Validators.required],
       image_url: ['', Validators.required],
       description: ['', [Validators.required, Validators.minLength(20)]],
-      is_available: [true]
+      is_available: [true],
     });
   }
 
   // Easy access to form controls from HTML
-  get f() { return this.comicForm.controls; }
+  get f() {
+    return this.comicForm.controls;
+  }
 
   // Check if a specific field has errors to show red borders
   isFieldInvalid(field: string): boolean {
@@ -59,7 +77,7 @@ export class AddComicComponent implements OnInit { // Reactive Form
       this.comicForm.markAllAsTouched(); // Show all errors
       return;
     }
-    
+
     this.isSubmitting = true;
     this.submitError = '';
 
@@ -67,7 +85,7 @@ export class AddComicComponent implements OnInit { // Reactive Form
     const data = {
       ...this.comicForm.value,
       price: parseFloat(this.comicForm.value.price),
-      stock: parseInt(this.comicForm.value.stock, 10)
+      stock: parseInt(this.comicForm.value.stock, 10),
     };
 
     // Send data to the backend
@@ -81,7 +99,7 @@ export class AddComicComponent implements OnInit { // Reactive Form
       error: () => {
         this.isSubmitting = false;
         this.submitError = 'An error occurred. Please try again.';
-      }
+      },
     });
   }
 
@@ -89,5 +107,55 @@ export class AddComicComponent implements OnInit { // Reactive Form
   onReset(): void {
     this.comicForm.reset({ is_available: true });
     this.submitError = '';
+    this.imagePreview = null;
+  }
+
+  // Drag and drop
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.handleFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      this.handleFile(event.target.files[0]);
+    }
+  }
+
+  handleFile(file: File) {
+    if (!file.type.match(/image\/*/)) {
+      this.submitError = 'Only images can be added as a cover.';
+      return;
+    }
+
+    // We assume the DB takes the filename and the image will be placed in assets
+    this.comicForm.patchValue({ image_url: file.name });
+    this.comicForm.get('image_url')?.markAsTouched();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage(event: Event, fileInput: HTMLInputElement) {
+    event.stopPropagation();
+    this.imagePreview = null;
+    this.comicForm.patchValue({ image_url: '' });
+    fileInput.value = '';
   }
 }
