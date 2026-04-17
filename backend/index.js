@@ -1,14 +1,43 @@
 const express = require("express"); // Added Express framework
 const cors = require("cors"); // Added CORS to allow Angular connections
+const multer = require("multer");
+const path = require("path");
 const db = require("./db");
 
 const app = express(); // Initialize express app
 app.use(cors()); // Enable CORS policy 
 app.use(express.json()); // Allow the server to parse JSON bodies
 
+// Multer Config for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Guarda directamente en los assets del frontend
+    cb(null, path.join(__dirname, '../the-comic-vault-spa/src/assets'));
+  },
+  filename: (req, file, cb) => {
+    // Generamos un nombre único (timestamp) para que no se sobre-escriban imágenes
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'cover-' + uniqueSuffix + ext);
+  }
+});
+const upload = multer({ storage: storage });
+
 // COMICS TABLE
 
 // Endpoints ---
+
+// Upload an image
+app.post("/api/upload", upload.single('image'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No image provided" });
+        }
+        res.json({ success: true, filename: req.file.filename });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Get all comics from the database
 app.get("/api/comics", async (req, res) => {

@@ -21,9 +21,16 @@ export class ComicService {
     return this.http.get<Comic>(`${this.apiUrl}/${id}`);
   }
 
-  // Adds a new comic to the list and gives it an ID
-  addComic(comic: Omit<Comic, 'id'>): Observable<Comic> {
-    return this.http.post<Comic>(this.apiUrl, comic);
+  // Add a new comic to the database
+  addComic(comic: Comic): Observable<any> {
+    return this.http.post<any>(this.apiUrl, comic);
+  }
+
+  // Upload an image file to the backend
+  uploadImage(file: File): Observable<{ success: boolean; filename: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<{ success: boolean; filename: string }>(`${this.apiUrl.replace('/comics', '/upload')}`, formData);
   }
 
   // Gets the first 6 comics to show them on the home page

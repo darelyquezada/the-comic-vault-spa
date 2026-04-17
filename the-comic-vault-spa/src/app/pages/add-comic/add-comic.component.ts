@@ -20,6 +20,7 @@ export class AddComicComponent implements OnInit {
 
   isDragging = false; // Drag & drop state
   imagePreview: string | ArrayBuffer | null = null; // Preview base64 string
+  selectedFile: File | null = null; // Store actual File object
 
   // Options for the dropdown menus
   categories = [
@@ -81,26 +82,43 @@ export class AddComicComponent implements OnInit {
     this.isSubmitting = true;
     this.submitError = '';
 
-    // Format data before sending to service
-    const data = {
-      ...this.comicForm.value,
-      price: parseFloat(this.comicForm.value.price),
-      stock: parseInt(this.comicForm.value.stock, 10),
+    // Function to handle database save after URL is locked in
+    const saveComic = (finalImageUrl: string) => {
+      const data = {
+        ...this.comicForm.value,
+        price: parseFloat(this.comicForm.value.price),
+        stock: parseInt(this.comicForm.value.stock, 10),
+        image_url: finalImageUrl
+      };
+
+      this.comicService.addComic(data).subscribe({
+        next: () => {
+          this.isSubmitting = false;
+          this.submitSuccess = true;
+          setTimeout(() => this.router.navigate(['/catalog']), 2500);
+        },
+        error: () => {
+          this.isSubmitting = false;
+          this.submitError = 'An error occurred. Please try again.';
+        },
+      });
     };
 
-    // Send data to the backend
-    this.comicService.addComic(data).subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.submitSuccess = true;
-        // Go back to catalog after a short delay
-        setTimeout(() => this.router.navigate(['/catalog']), 2500);
-      },
-      error: () => {
-        this.isSubmitting = false;
-        this.submitError = 'An error occurred. Please try again.';
-      },
-    });
+    // If an image was provided, upload it first
+    if (this.selectedFile) {
+      this.comicService.uploadImage(this.selectedFile).subscribe({
+        next: (response) => {
+          saveComic(response.filename);
+        },
+        error: () => {
+          this.isSubmitting = false;
+          this.submitError = 'Failed to upload the image file to the server.';
+        }
+      });
+    } else {
+      // Fallback if somehow there's no file provided
+      saveComic(this.comicForm.value.image_url);
+    }
   }
 
   // Clear form and reset to defaults
@@ -108,6 +126,7 @@ export class AddComicComponent implements OnInit {
     this.comicForm.reset({ is_available: true });
     this.submitError = '';
     this.imagePreview = null;
+    this.selectedFile = null;
   }
 
   // Drag and drop
@@ -141,6 +160,9 @@ export class AddComicComponent implements OnInit {
       return;
     }
 
+    // Keep the file
+    this.selectedFile = file;
+
     // We assume the DB takes the filename and the image will be placed in assets
     this.comicForm.patchValue({ image_url: file.name });
     this.comicForm.get('image_url')?.markAsTouched();
@@ -155,6 +177,7 @@ export class AddComicComponent implements OnInit {
   removeImage(event: Event, fileInput: HTMLInputElement) {
     event.stopPropagation();
     this.imagePreview = null;
+    this.selectedFile = null;
     this.comicForm.patchValue({ image_url: '' });
     fileInput.value = '';
   }
