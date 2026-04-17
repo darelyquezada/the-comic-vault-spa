@@ -29,7 +29,7 @@ export class DetailComponent implements OnInit {
   });
 
   constructor(
-    private comicService: ComicService,
+    public comicService: ComicService, // public so the HTML template can access it
     private cartService: CartService
   ) {}
 

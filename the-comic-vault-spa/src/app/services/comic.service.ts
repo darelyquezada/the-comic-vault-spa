@@ -9,6 +9,9 @@ export class ComicService {
   // Use API URL from environment
   private apiUrl = `${environment.apiUrl}/api/comics`;
 
+  // Image Base URL for Images uploaded through Render  
+  public imageBaseUrl = `${environment.apiUrl}/uploads`;
+
   constructor(private http: HttpClient) {} // Inject HttpClient for making API calls
 
   // Returns the full list of comics
@@ -30,7 +33,9 @@ export class ComicService {
   uploadImage(file: File): Observable<{ success: boolean; filename: string }> {
     const formData = new FormData();
     formData.append('image', file);
-    return this.http.post<{ success: boolean; filename: string }>(`${this.apiUrl.replace('/comics', '/upload')}`, formData);
+    // The upload endpoint is separate from the comics endpoint, so we replace '/comics' with '/upload' in the API URL
+    const uploadUrl = this.apiUrl.replace('/comics', '/upload');
+    return this.http.post<{ success: boolean; filename: string }>(uploadUrl, formData);
   }
 
   // Gets the first 6 comics to show them on the home page

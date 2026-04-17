@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ComicService } from '../../services/comic.service';
 import { Comic } from '../../models/comic.model';
 
 @Component({
@@ -16,6 +17,9 @@ export class ComicCardComponent {
 
   @Output() addToCart = new EventEmitter<Comic>(); // Output Event to notify parent component when adding to cart
   @Output() viewDetail = new EventEmitter<Comic>(); // Output Event to notify parent component when 'View Details' is clicked
+
+  // Inject the service as public to access it in the HTML
+  constructor(public comicService: ComicService) {}
 
   onAddToCart(event: Event): void {
     event.stopPropagation(); // Prevent card click event when clicking 'Add to Cart' button
