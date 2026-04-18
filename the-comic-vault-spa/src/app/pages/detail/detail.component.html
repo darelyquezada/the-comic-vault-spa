@@ -23,7 +23,7 @@
       <div class="detail-image-col">
         <div class="cover-wrap">
           <span class="brand-badge badge" [ngClass]="getBrandClass()">{{ c.brand | uppercase }}</span>
-          <img [src]="comicService.imageBaseUrl + '/' + comic()?.image_url" [alt]="comic()?.title" class="comic-image">
+          <img [src]="comicService.imageBaseUrl + '/' + comic()?.image_url" [alt]="comic()?.title" class="comic-image" loading="lazy">
         </div>
 
         <div class="stock-indicator" [ngClass]="{ 'low-stock': c.stock < 5, 'in-stock': c.stock >= 5 }">

@@ -42,11 +42,23 @@
 .detail-image-col { position: sticky; top: calc(var(--nav-height) + 24px); }
 
 .cover-wrap {
-  position: relative;
-  border: 3px solid var(--color-text-dark);
-  box-shadow: 8px 8px 0px var(--color-text-dark);
+  width: 100%;
+  max-width: 450px; 
+  aspect-ratio: 2 / 3; /* Proporción estándar de cómic */
   overflow: hidden;
-  aspect-ratio: 2/3;
+  border-radius: 8px;
+  background-color: #f0f0f0; /* Fondo gris mientras carga */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.comic-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+  display: block;
 }
 
 .cover-wrap .brand-badge {
