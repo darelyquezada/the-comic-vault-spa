@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { ComicService } from '../../services/comic.service';
 import { CartItem } from '../../models/cart.model';
 
 @Component({
@@ -18,7 +19,10 @@ export class CartComponent {
   itemCount = this.cartService.itemCount;
   isEmpty = this.cartService.isEmpty;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    public comicService: ComicService 
+  ) {}
 
   // Changes quantity using the plus/minus buttons
   updateQuantity(item: CartItem, delta: number): void {

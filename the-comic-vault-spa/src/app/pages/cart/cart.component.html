@@ -29,7 +29,7 @@
         <div class="cart-item" *ngFor="let item of items()">
           <!-- Thumbnail -->
           <div class="item-thumb">
-            <img [src]="item.comic.image_url" [alt]="item.comic.title" />
+            <img [src]="comicService.imageBaseUrl + '/' + item.comic.image_url" [alt]="item.comic.title" />
           </div>
 
           <!-- Info -->
